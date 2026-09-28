@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>satAI</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    body {
+      background: #0b0f14;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .app {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .header {
+      height: 65px;
+      min-height: 65px;
+
+      background: #111720;
+      border-bottom: 1px solid #242d37;
+
+      display: flex;
+      align-items: center;
+
+      padding: 0 16px;
+      gap: 12px;
+    }
+
+    .robot {
+      width: 42px;
+      height: 42px;
+
+      border-radius: 13px;
+
+      background: #202a35;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 23px;
+    }
+
+    .title-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .status {
+      color: #72e58a;
+      font-size: 12px;
+    }
+
+
+    /* =========================
+       CHAT
+    ========================= */
+
+    .chat {
+      flex: 1;
+
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      padding: 20px 12px 25px;
+
+      scroll-behavior: smooth;
+    }
+
+    .chat::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .chat::-webkit-scrollbar-thumb {
+      background: #303b47;
+      border-radius: 10px;
+    }
+
+
+    /* =========================
+       WELCOME
+    ========================= */
+
+    .welcome {
+      text-align: center;
+
+      margin-top: 65px;
+
+      color: #8e9aa7;
+
+      font-size: 14px;
+    }
+
+    .welcome-title {
+      color: white;
+
+      font-size: 26px;
+      font-weight: bold;
+
+      margin-bottom: 8px;
+    }
+
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    .message {
+      width: 100%;
+
+      display: flex;
+
+      margin: 9px 0;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message.ai {
+      justify-content: flex-start;
+    }
+
+
+    /* =========================
+       BUBBLE
+    ========================= */
+
+    .bubble {
+      width: fit-content;
+
+      max-width: 92%;
+
+      min-width: 45px;
+
+      padding: 11px 14px;
+
+      border-radius: 17px;
+
+      font-size: 15px;
+
+      line-height: 1.5;
+
+      white-space: pre-wrap;
+
+      word-break: normal;
+
+      overflow-wrap: break-word;
+    }
+
+    .user .bubble {
+      background: #2563eb;
+
+      border-bottom-right-radius: 5px;
+    }
+
+    .ai .bubble {
+      background: #18212b;
+
+      border: 1px solid #27333f;
+
+      border-bottom-left-radius: 5px;
+    }
+
+
+    /* =========================
+       FOTO USER
+    ========================= */
+
+    .user-image {
+      display: block;
+
+      width: 190px;
+
+      max-width: 100%;
+
+      max-height: 280px;
+
+      object-fit: cover;
+
+      border-radius: 13px;
+
+      margin-bottom: 7px;
+    }
+
+
+    /* =========================
+       INPUT AREA
+    ========================= */
+
+    .input-area {
+      width: 100%;
+
+      height: 63px;
+      min-height: 63px;
+
+      background: #111720;
+
+      border-top: 1px solid #242d37;
+
+      padding: 9px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+    }
+
+
+    /* =========================
+       FOTO BUTTON
+    ========================= */
+
+    .photo-btn {
+      width: 45px;
+      height: 45px;
+
+      min-width: 45px;
+
+      border: none;
+
+      border-radius: 14px;
+
+      background: #202a35;
+
+      color: white;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      font-size: 21px;
+
+      cursor: pointer;
+    }
+
+    .photo-btn:active {
+      transform: scale(0.94);
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+
+    /* =========================
+       INPUT BOX
+    ========================= */
+
+    .input-box {
+      flex: 1;
+
+      min-width: 0;
+
+      width: 100%;
+
+      height: 45px;
+
+      background: #202a35;
+
+      border-radius: 15px;
+
+      display: flex;
+
+      align-items: center;
+
+      padding: 0 12px;
+
+      overflow: hidden;
+    }
+
+
+    /* =========================
+       TEXT INPUT
+    ========================= */
+
+    #messageInput {
+      display: block;
+
+      width: 100%;
+
+      height: 43px;
+      min-height: 43px;
+      max-height: 43px;
+
+      padding: 0;
+
+      margin: 0;
+
+      border: none;
+      outline: none;
+
+      background: transparent;
+
+      color: white;
+
+      font-size: 15px;
+
+      font-family: Arial, sans-serif;
+
+      line-height: 43px;
+
+      resize: none;
+
+      white-space: nowrap;
+
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    #messageInput::-webkit-scrollbar {
+      display: none;
+    }
+
+    #messageInput::placeholder {
+      color: #7e8995;
+    }
+
+
+    /* =========================
+       SEND BUTTON
+    ========================= */
+
+    .send-btn {
+      width: 45px;
+      height: 45px;
+
+      min-width: 45px;
+
+      border: none;
+
+      border-radius: 14px;
+
+      background: #2563eb;
+
+      color: white;
+
+      font-size: 20px;
+
+      cursor: pointer;
+    }
+
+    .send-btn:active {
+      transform: scale(0.94);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+    }
+
+
+    /* =========================
+       IMAGE PREVIEW
+    ========================= */
+
+    .preview {
+      position: absolute;
+
+      left: 10px;
+      bottom: 72px;
+
+      padding: 7px;
+
+      background: #18212b;
+
+      border: 1px solid #303b47;
+
+      border-radius: 13px;
+
+      display: none;
+
+      z-index: 20;
+    }
+
+    .preview img {
+      width: 85px;
+      height: 85px;
+
+      object-fit: cover;
+
+      border-radius: 9px;
+
+      display: block;
+    }
+
+    .remove-preview {
+      position: absolute;
+
+      top: -8px;
+      right: -8px;
+
+      width: 24px;
+      height: 24px;
+
+      border: none;
+
+      border-radius: 50%;
+
+      background: #ef4444;
+
+      color: white;
+
+      font-size: 15px;
+
+      cursor: pointer;
+    }
+
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    .loading {
+      display: flex;
+
+      align-items: center;
+
+      gap: 4px;
+
+      height: 18px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+
+      background: #9ba7b4;
+
+      border-radius: 50%;
+
+      animation: bounce 1s infinite;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+      }
+
+      30% {
+        transform: translateY(-5px);
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <div class="app">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+      <div class="robot">
+        🤖
+      </div>
+
+      <div class="title-box">
+
+        <div class="title">
+          satAI
+        </div>
+
+        <div class="status">
+          ● Online
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CHAT -->
+
+    <div
+      class="chat"
+      id="chat"
+    >
+
+      <div
+        class="welcome"
+        id="welcome"
+      >
+
+        <div class="welcome-title">
+          Halo, gua satAI 👋
+        </div>
+
+        <div>
+          Tanya apa aja, gua coba bantu 😎
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- IMAGE PREVIEW -->
+
+    <div
+      class="preview"
+      id="preview"
+    >
+
+      <button
+        class="remove-preview"
+        onclick="removeImage()"
+      >
+        ×
+      </button>
+
+      <img
+        id="previewImage"
+        alt="Preview"
+      >
+
+    </div>
+
+
+    <!-- INPUT AREA -->
+
+    <div class="input-area">
+
+
+      <!-- PHOTO -->
+
+      <label class="photo-btn">
+
+        📷
+
+        <input
+          type="file"
+          id="imageInput"
+          accept="image/*"
+          onchange="handleImage(event)"
+        >
+
+      </label>
+
+
+      <!-- TEXT -->
+
+      <div class="input-box">
+
+        <textarea
+          id="messageInput"
+          placeholder="Tulis pesan..."
+          rows="1"
+          wrap="off"
+        ></textarea>
+
+      </div>
+
+
+      <!-- SEND -->
+
+      <button
+        class="send-btn"
+        id="sendButton"
+        onclick="sendMessage()"
+      >
+        ➤
+      </button>
+
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+
+    /* =========================
+       WORKER
+    ========================= */
+
+    const WORKER_URL =
+      "https://satai-server.satriaps343.workers.dev/";
+
+
+    /* =========================
+       ELEMENT
+    ========================= */
+
+    const chat =
+      document.getElementById("chat");
+
+    const input =
+      document.getElementById("messageInput");
+
+    const imageInput =
+      document.getElementById("imageInput");
+
+    const preview =
+      document.getElementById("preview");
+
+    const previewImage =
+      document.getElementById("previewImage");
+
+    const welcome =
+      document.getElementById("welcome");
+
+    const sendButton =
+      document.getElementById("sendButton");
+
+
+    /* =========================
+       IMAGE DATA
+    ========================= */
+
+    let selectedImage = null;
+
+    let selectedImageMime = null;
+
+
+    /* =========================
+       PILIH FOTO
+    ========================= */
+
+    function handleImage(event) {
+
+      const file =
+        event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+
+      selectedImageMime =
+        file.type || "image/jpeg";
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function(event) {
+
+          const result =
+            event.target.result;
+
+
+          selectedImage =
+            result.split(",")[1];
+
+
+          previewImage.src =
+            result;
+
+
+          preview.style.display =
+            "block";
+
+        };
+
+
+      reader.readAsDataURL(file);
+
+    }
+
+
+    /* =========================
+       HAPUS FOTO
+    ========================= */
+
+    function removeImage() {
+
+      selectedImage = null;
+
+      selectedImageMime = null;
+
+      imageInput.value = "";
+
+      previewImage.src = "";
+
+      preview.style.display =
+        "none";
+
+    }
+
+
+    /* =========================
+       USER MESSAGE
+    ========================= */
+
+    function addUserMessage(
+      text,
+      imageData,
+      imageMime
+    ) {
+
+      if (welcome) {
+
+        welcome.style.display =
+          "none";
+
+      }
+
+
+      const message =
+        document.createElement("div");
+
+      message.className =
+        "message user";
+
+
+      const bubble =
+        document.createElement("div");
+
+      bubble.className =
+        "bubble";
+
+
+      /* IMAGE */
+
+      if (imageData) {
+
+        const img =
+          document.createElement("img");
+
+        img.className =
+          "user-image";
+
+        img.src =
+          "data:" +
+          imageMime +
+          ";base64," +
+          imageData;
+
+        img.alt =
+          "Gambar yang dikirim";
+
+        bubble.appendChild(img);
+
+      }
+
+
+      /* TEXT */
+
+      if (text) {
+
+        const textElement =
+          document.createElement("div");
+
+        textElement.textContent =
+          text;
+
+        bubble.appendChild(
+          textElement
+        );
+
+      }
+
+
+      message.appendChild(
+        bubble
+      );
+
+      chat.appendChild(
+        message
+      );
+
+
+      scrollBottom();
+
+    }
+
+
+    /* =========================
+       AI MESSAGE
+    ========================= */
+
+    function addAIMessage(text) {
+
+      const message =
+        document.createElement("div");
+
+      message.className =
+        "message ai";
+
+
+      const bubble =
+        document.createElement("div");
+
+      bubble.className =
+        "bubble";
+
+
+      bubble.textContent =
+        text;
+
+
+      message.appendChild(
+        bubble
+      );
+
+      chat.appendChild(
+        message
+      );
+
+
+      scrollBottom();
+
+    }
+
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    function addLoading() {
+
+      const message =
+        document.createElement("div");
+
+      message.className =
+        "message ai";
+
+      message.id =
+        "loadingMessage";
+
+
+      const bubble =
+        document.createElement("div");
+
+      bubble.className =
+        "bubble";
+
+
+      bubble.innerHTML = `
+        <div class="loading">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      `;
+
+
+      message.appendChild(
+        bubble
+      );
+
+      chat.appendChild(
+        message
+      );
+
+
+      scrollBottom();
+
+    }
+
+
+    /* =========================
+       REMOVE LOADING
+    ========================= */
+
+    function removeLoading() {
+
+      const loading =
+        document.getElementById(
+          "loadingMessage"
+        );
+
+
+      if (loading) {
+
+        loading.remove();
+
+      }
+
+    }
+
+
+    /* =========================
+       SCROLL
+    ========================= */
+
+    function scrollBottom() {
+
+      setTimeout(
+        function() {
+
+          chat.scrollTop =
+            chat.scrollHeight;
+
+        },
+        50
+      );
+
+    }
+
+
+    /* =========================
+       SEND MESSAGE
+    ========================= */
+
+    async function sendMessage() {
+
+      const text =
+        input.value.trim();
+
+
+      if (
+        !text &&
+        !selectedImage
+      ) {
+
+        return;
+
+      }
+
+
+      const imageToSend =
+        selectedImage;
+
+      const mimeToSend =
+        selectedImageMime;
+
+
+      /* TAMPILKAN PESAN */
+
+      addUserMessage(
+        text,
+        imageToSend,
+        mimeToSend
+      );
+
+
+      /* RESET INPUT */
+
+      input.value = "";
+
+      input.scrollLeft = 0;
+
+
+      /* HAPUS FOTO */
+
+      removeImage();
+
+
+      /* LOADING */
+
+      addLoading();
+
+      sendButton.disabled =
+        true;
+
+
+      try {
+
+
+        const response =
+          await fetch(
+            WORKER_URL,
+            {
+
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+
+                pesan: text,
+
+                image:
+                  imageToSend,
+
+                imageMimeType:
+                  mimeToSend
+
+              })
+
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        removeLoading();
+
+
+        if (
+          data &&
+          data.jawaban
+        ) {
+
+          addAIMessage(
+            data.jawaban
+          );
+
+        } else {
+
+          addAIMessage(
+            "Maaf ya, satAI lagi gangguan sebentar 😭 coba lagi nanti"
+          );
+
+        }
+
+
+      } catch (error) {
+
+        removeLoading();
+
+
+        addAIMessage(
+          "Maaf ya, satAI sedang melakukan perbaikan sebentar 😭 coba lagi nanti"
+        );
+
+      } finally {
+
+        sendButton.disabled =
+          false;
+
+        input.focus();
+
+      }
+
+    }
+
+
+    /* =========================
+       ENTER = SEND
+    ========================= */
+
+    input.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (
+          event.key === "Enter" &&
+          !event.shiftKey
+        ) {
+
+          event.preventDefault();
+
+          sendMessage();
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       START
+    ========================= */
+
+    window.addEventListener(
+      "load",
+      function() {
+
+        input.focus();
+
+      }
+    );
+
+
+  </script>
+
+
+</body>
+
+</html>
